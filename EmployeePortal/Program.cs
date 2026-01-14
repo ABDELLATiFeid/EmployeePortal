@@ -1,3 +1,7 @@
+using EmployeePortal.Data;
+using EmployeePortal.Services;
+using Microsoft.EntityFrameworkCore;
+
 namespace EmployeePortal
 {
     public class Program
@@ -8,6 +12,12 @@ namespace EmployeePortal
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+
+            // Add ApplicationDbContext and configure SQL Server connection string
+            builder.Services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseSqlServer(builder.Configuration.GetConnectionString("ECommerceDBConnection")));
+
+            builder.Services.AddScoped<EmployeeService>();
 
             var app = builder.Build();
 
@@ -28,7 +38,7 @@ namespace EmployeePortal
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
+                pattern: "{controller=Employee}/{action=List}/{id?}");
 
             app.Run();
         }
