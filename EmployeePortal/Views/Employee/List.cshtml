@@ -72,7 +72,15 @@
                 </div>
             </div>
 
-            <div class="card shadow-sm">
+
+            <!-- Test Ajax -->
+            <div id="employeeTableContainer">
+                @await Html.PartialAsync("_EmployeeTable", Model)
+            </div>
+
+            
+            <!-- Table of Employee -->
+            @* <div class="card shadow-sm">
                 <div class="card-body p-0">
                     <table class="table table-hover table-striped mb-0">
                         <thead class="bg-primary text-white">
@@ -121,37 +129,37 @@
                         </tbody>
                     </table>
                 </div>
-            </div>
+            </div> *@
 
             <!-- Pagination -->
-            <nav aria-label="Employee List Pagination" class="mt-4">
+            @* <nav aria-label="Employee List Pagination" class="mt-4">
                 <ul class="pagination justify-content-center mb-0">
 
                     @if (Model.PageNumber == 1)
                     {
-                        <li class="page-item disabled"><span class="page-link">First ⏮️</span></li>
-                        <li class="page-item disabled"><span class="page-link">Previous ⬅️</span></li>
+                        <li class="page-item disabled"><span class="page-link"> ⏮️</span></li>
+                        <li class="page-item disabled"><span class="page-link"> ⬅️</span></li>
                     }
                     else
                     {
-                        <li class="page-item"><a class="page-link" href="@Url.Action("List", "Employee", GetRouteValuesForPage(1))">First ⏮️</a></li>
-                        <li class="page-item"><a class="page-link" href="@Url.Action("List", "Employee", GetRouteValuesForPage(Model.PageNumber - 1))">Previous ⬅️</a></li>
+                        <li class="page-item"><a class="page-link" href="@Url.Action("List", "Employee", GetRouteValuesForPage(1))"> ⏮️</a></li>
+                        <li class="page-item"><a class="page-link" href="@Url.Action("List", "Employee", GetRouteValuesForPage(Model.PageNumber - 1))"> ⬅️</a></li>
                     }
 
                     <li class="page-item active"><span class="page-link">@Model.PageNumber</span></li>
 
                     @if (Model.PageNumber == Model.TotalPages)
                     {
-                        <li class="page-item disabled"><span class="page-link">Next ➡️</span></li>
-                        <li class="page-item disabled"><span class="page-link">Last ⏭️</span></li>
+                        <li class="page-item disabled"><span class="page-link"> ➡️</span></li>
+                        <li class="page-item disabled"><span class="page-link"> ⏭️</span></li>
                     }
                     else
                     {
-                        <li class="page-item"><a class="page-link" href="@Url.Action("List", "Employee", GetRouteValuesForPage(Model.PageNumber + 1))">Next ➡️</a></li>
-                        <li class="page-item"><a class="page-link" href="@Url.Action("List", "Employee", GetRouteValuesForPage(Model.TotalPages))">Last ⏭️</a></li>
+                        <li class="page-item"><a class="page-link" href="@Url.Action("List", "Employee", GetRouteValuesForPage(Model.PageNumber + 1))"> ➡️</a></li>
+                        <li class="page-item"><a class="page-link" href="@Url.Action("List", "Employee", GetRouteValuesForPage(Model.TotalPages))"> ⏭️</a></li>
                     }
                 </ul>
-            </nav>
+            </nav> *@
 
         </div>
     </div>
@@ -169,4 +177,45 @@
             PageNumber = pageNumber
         };
     }
+}
+
+
+@* Test Ajax *@
+@section Scripts {
+    <script>
+        function loadEmployees(pageNumber = 1) {
+
+            const data = {
+                searchTerm: $('#SearchTerm').val(),
+                selectedDepartmentId: $('#SelectedDepartmentId').val(),
+                selectedEmployeeTypeId: $('#SelectedEmployeeTypeId').val(),
+                pageSize: $('#PageSize').val(),
+                pageNumber: pageNumber
+            };
+
+            $.ajax({
+                url: '/Employee/ListAjax',
+                type: 'GET',
+                data: data,
+                success: function (result) {
+                    $('#employeeTableContainer').html(result);
+                },
+                error: function () {
+                    alert('Error loading employees');
+                }
+            });
+        }
+
+        $('form').on('submit', function (e) {
+            e.preventDefault();
+            loadEmployees(1);
+        });
+
+        // Pagination click
+        $(document).on('click', '.ajax-page', function (e) {
+            e.preventDefault();
+            const page = $(this).data('page');
+            loadEmployees(page);
+        });
+    </script>
 }

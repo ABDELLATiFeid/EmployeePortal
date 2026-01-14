@@ -17,6 +17,42 @@ namespace EmployeePortal.Controllers
             _employeeService = employeeService;
         }
 
+
+
+        /*----------------------------------------------------------------------------*/
+        [HttpGet]
+        public async Task<IActionResult> ListAjax(
+            string? searchTerm,
+            int? selectedDepartmentId,
+            int? selectedEmployeeTypeId,
+            int pageNumber = 1,
+            int pageSize = 5)
+        {
+            // نفس اللوجيك بالظبط
+            var (employees, totalCount) =
+                await _employeeService.GetEmployees(
+                    searchTerm,
+                    selectedDepartmentId,
+                    selectedEmployeeTypeId,
+                    pageNumber,
+                    pageSize);
+
+            var vm = new EmployeeListVM
+            {
+                Employees = employees,
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                Total = totalCount,
+                TotalPages = (int)Math.Ceiling((double)totalCount / pageSize)
+            };
+
+            // IMPORTANT: بنرجّع Partial View مش View
+            return PartialView("_EmployeeTable", vm);
+        }
+
+
+        /*----------------------------------------------------------------------------*/
+
         [HttpGet]
         public async Task<IActionResult> List(
             string? searchTerm,
