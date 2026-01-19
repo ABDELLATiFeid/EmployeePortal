@@ -1,13 +1,15 @@
-using System.Diagnostics;
-using EmployeePortal.Models;
+using EmployeePortal.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Diagnostics;
 
-namespace EmployeePortal.Controllers
+namespace Ajax_MVC.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
 
+      
         public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
@@ -18,6 +20,7 @@ namespace EmployeePortal.Controllers
             return View();
         }
 
+        
         public IActionResult Privacy()
         {
             return View();
